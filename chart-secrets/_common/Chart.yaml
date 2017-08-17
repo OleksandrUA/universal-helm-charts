@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for Kubernetes responsible for managing the Secrets
+name: chart-secrets
+version: 0.0.1

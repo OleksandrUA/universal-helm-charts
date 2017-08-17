@@ -1,0 +1,40 @@
+{{- $root := . -}}
+{{ range $index, $cron := .Values.crons }}
+---
+apiVersion: batch/v2alpha1
+kind: CronJob
+metadata:
+  name: cron-{{ $root.Values.serviceName }}-{{ $index }}
+  namespace: {{ $root.Values.kubernetesNamespace }}
+  labels:
+    kubernetes-service: "{{ $root.Values.serviceName }}"
+spec:
+  schedule: "{{ $cron.schedule }}"
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: job-{{ $cron.containerTag }}
+            image: YOUR_DOCKER_REGISTRY_URL/NAME_OF_YOUR_BASE_DOCKER_IMAGES_REPO:{{ $cron.containerTag }}
+            env:
+            {{- range $root.Values.secretsToInject }}
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  key: {{ . }}
+                  name: {{ $root.Values.serviceName }}
+            {{- end }}
+            {{- range $root.Values.configMapsToInject }}
+            - name: {{ . }}
+              valueFrom:
+                configMapKeyRef:
+                  key: {{ . }}
+                  name: {{ $root.Values.serviceName }}
+            {{- end }}
+            command:
+{{ toYaml $cron.command | indent 12 -}}
+{{ end }}

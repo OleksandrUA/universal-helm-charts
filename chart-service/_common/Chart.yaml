@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for Kubernetes responsible for deploying the Service + Deployment + CronJobs
+name: chart-service
+version: 0.0.1

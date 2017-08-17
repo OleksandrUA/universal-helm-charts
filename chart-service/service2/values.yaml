@@ -1,0 +1,32 @@
+secretsToInject:
+  - GLOBAL_SECRET_KEY_1
+  - SERVICE_2_SPECIFIC_SECRET_KEY_1
+  - SERVICE_2_SPECIFIC_SECRET_KEY_2
+  - SERVICE_2_SPECIFIC_SECRET_KEY_3
+configMapsToInject:
+  - GLOBAL_CONFIG_KEY_1
+  - SERVICE_2_SPECIFIC_CONFIG_KEY_1
+  - SERVICE_2_SPECIFIC_CONFIG_KEY_2
+  - SERVICE_2_SPECIFIC_CONFIG_KEY_3
+dockerImageRepository: SERVICE2_DOCKER_REGISTRY_URI
+dockerImagePullPolicy: Always
+serviceVersion: 0.0.1
+serviceName: service2
+serviceType: ClusterIP
+serviceExternalPort: 80
+serviceInternalPort: 8191
+serviceInternalHealthPath: /health
+serviceProtocol: TCP
+crons:
+- containerTag: curl
+  command: ["curl", "-XPOST", "http://service1/endpoint"]
+  schedule: "0 0 * * *" # every night at 00:00
+- containerTag: curl
+  command: ["curl", "-XPOST", "http://service3/endpoint"]
+  schedule: "10 2 * * *" # every night at 02:10
+resources:
+  limits:
+    memory: 50Mi
+  requests:
+    cpu: 30m
+    memory: 20Mi

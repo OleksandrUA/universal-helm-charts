@@ -1,0 +1,25 @@
+secretsToInject:
+  - GLOBAL_SECRET_KEY_1
+  - SERVICE_1_SPECIFIC_SECRET_KEY_1
+  - SERVICE_1_SPECIFIC_SECRET_KEY_2
+  - SERVICE_1_SPECIFIC_SECRET_KEY_3
+configMapsToInject:
+  - GLOBAL_CONFIG_KEY_1
+  - SERVICE_1_SPECIFIC_CONFIG_KEY_1
+  - SERVICE_1_SPECIFIC_CONFIG_KEY_2
+  - SERVICE_1_SPECIFIC_CONFIG_KEY_3
+dockerImageRepository: SERVICE1_DOCKER_REGISTRY_URI
+dockerImagePullPolicy: Always
+serviceVersion: 0.0.1
+serviceName: service1
+serviceType: LoadBalancer
+serviceExternalPort: 80
+serviceInternalPort: 3000
+serviceInternalHealthPath: /
+serviceProtocol: TCP
+resources:
+  limits:
+    memory: 100Mi
+  requests:
+    cpu: 10m
+    memory: 60Mi

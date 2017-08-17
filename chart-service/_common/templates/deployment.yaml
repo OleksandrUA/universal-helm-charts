@@ -1,0 +1,47 @@
+{{- $root := . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "name" . }}
+  namespace: {{ .Values.kubernetesNamespace }}
+  labels:
+    chart: "{{ .Values.serviceName }}-{{ .Values.serviceVersion | replace "+" "_" }}"
+spec:
+  revisionHistoryLimit: 3
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+    spec:
+      containers:
+      - name: {{ .Values.serviceName }}
+        image: "{{ .Values.dockerImageRepository }}:{{ .Values.dockerImageTag }}"
+        imagePullPolicy: {{ .Values.dockerImagePullPolicy }}
+        env:
+        - name: RELEASEDATETIME
+          value: {{ .Values.releaseDateTime }}
+        {{- range .Values.secretsToInject }}
+        - name: {{ . }}
+          valueFrom:
+            secretKeyRef:
+              key: {{ . }}
+              name: {{ $root.Values.serviceName }}
+        {{- end }}
+        {{- range .Values.configMapsToInject }}
+        - name: {{ . }}
+          valueFrom:
+            configMapKeyRef:
+              key: {{ . }}
+              name: {{ $root.Values.serviceName }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.serviceInternalPort }}
+        {{- if .Values.serviceInternalHealthPath}}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.serviceInternalHealthPath }}
+            port: {{ .Values.serviceInternalPort }}
+        {{- end}}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}

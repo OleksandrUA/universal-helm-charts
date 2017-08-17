@@ -1,0 +1,25 @@
+secretsToInject:
+  - GLOBAL_SECRET_KEY_1
+  - SERVICE_3_SPECIFIC_SECRET_KEY_1
+  - SERVICE_3_SPECIFIC_SECRET_KEY_2
+  - SERVICE_3_SPECIFIC_SECRET_KEY_3
+configMapsToInject:
+  - GLOBAL_CONFIG_KEY_1
+  - SERVICE_3_SPECIFIC_CONFIG_KEY_1
+  - SERVICE_3_SPECIFIC_CONFIG_KEY_2
+  - SERVICE_3_SPECIFIC_CONFIG_KEY_3
+dockerImageRepository: SERVICE3_DOCKER_REGISTRY_URI
+dockerImagePullPolicy: Always
+serviceVersion: 0.0.1
+serviceName: service3
+serviceType: ClusterIP
+serviceExternalPort: 80
+serviceInternalPort: 8888
+serviceInternalHealthPath: /health
+serviceProtocol: TCP
+resources:
+  limits:
+    memory: 50Mi
+  requests:
+    cpu: 30m
+    memory: 20Mi
